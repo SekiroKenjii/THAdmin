@@ -3,10 +3,18 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { TopnavComponent } from './mastertheme/topnav/topnav.component';
+import { AsidenavComponent } from './mastertheme/asidenav/asidenav.component';
+import { FooterComponent } from './mastertheme/footer/footer.component';
+import { HomeComponent } from './areas/home/home.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    TopnavComponent,
+    AsidenavComponent,
+    FooterComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,

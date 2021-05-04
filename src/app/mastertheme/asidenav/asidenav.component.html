@@ -1,0 +1,168 @@
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+  <a class="brand-link" routerLink="home">
+    <img src="assets/img/logo.png" alt="TGAdmim Logo" class="brand-image img-circle elevation-0" style="opacity: 0.8" />
+    <div>
+      <span class="brand-text">TGAdmin App</span>
+    </div>
+  </a>
+
+  <div class="sidebar">
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+      <div class="image">
+        <img class="img-circle elevation-0" src="assets/img/AdminAvatar.jpg" alt="Avatar" />
+      </div>
+      <div class="info">
+        <a routerLink="users" class="d-block">
+          Võ Trung Thường
+          <!-- {{getFullName(accountService.currentUser$)}} -->
+          <!-- <span class="badge badge-danger ml-2">{{getUserRole(accountService.currentUser$)}}</span> -->
+          <span class="badge badge-danger ml-2">admin</span>
+        </a>
+      </div>
+    </div>
+
+    <nav class="mt-2">
+      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        <li class="nav-item">
+          <a routerLink="home" class="nav-link">
+            <i class="nav-icon fas fa-home"></i>
+            <p>
+              Home
+              <i class="fas fa-angle-right right"></i>
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="dashboard" class="nav-link">
+            <i class="nav-icon fas fa-tachometer-alt"></i>
+            <p>
+              Dashboard
+              <i class="fas fa-angle-right right"></i>
+            </p>
+          </a>
+        </li>
+        <li class="nav-item has-treeview mt-1">
+          <a href="javascript:void(0)" class="nav-link">
+            <i class="nav-icon fas fa-box-open"></i>
+            <p>
+              Quản Lý Sản Phẩm
+              <i class="fas fa-angle-down right"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a routerLink="products" class="nav-link">
+                <i class="fas fa-caret-right nav-icon"></i>
+                <p>
+                  Sản Phẩm
+                  <i class="fas fa-cube right"></i>
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="categories" class="nav-link">
+                <i class="fas fa-caret-right nav-icon"></i>
+                <p>
+                  Loại Sản Phẩm
+                  <i class="fas fa-atom right"></i>
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="vendors" class="nav-link">
+                <i class="fas fa-caret-right nav-icon"></i>
+                <p>
+                  Nhà Cung Cấp
+                  <i class="fas fa-cubes right"></i>
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="trademarks" class="nav-link">
+                <i class="fas fa-caret-right nav-icon"></i>
+                <p>
+                  Thương Hiệu
+                  <i class="fas fa-trademark right"></i>
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="conditions" class="nav-link">
+                <i class="fas fa-caret-right nav-icon"></i>
+                <p>
+                  Tình Trạng Hàng
+                  <i class="fas fa-sync right"></i>
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="prodtags" class="nav-link">
+                <i class="fas fa-caret-right nav-icon"></i>
+                <p>
+                  Nhãn Sản Phẩm
+                  <i class="fas fa-tags right"></i>
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="demands" class="nav-link">
+                <i class="fas fa-caret-right nav-icon"></i>
+                <p>
+                  Nhu Cầu
+                  <i class="fas fa-disease right"></i>
+                </p>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item has-treeview mt-1">
+          <a href="javascript:void(0)" class="nav-link">
+            <i class="nav-icon fas fa-user"></i>
+            <p>
+              Tài Khoản
+              <i class="fas fa-angle-down right"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a routerLink="roles" class="nav-link">
+                <i class="fas fa-caret-right nav-icon"></i>
+                <p>
+                  Quyền trang web
+                  <i class="fas fa-user-shield right"></i>
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="user/employees" class="nav-link">
+                <i class="fas fa-caret-right nav-icon"></i>
+                <p>
+                  Nhân viên
+                  <i class="fas fa-user-tie right"></i>
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="users/customer" class="nav-link">
+                <i class="fas fa-caret-right nav-icon"></i>
+                <p>
+                  Khách hàng
+                  <i class="fas fa-users right"></i>
+                </p>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item mt-1">
+          <a routerLink="orders" class="nav-link">
+            <i class="nav-icon fas fa-money-bill-alt"></i>
+            <p>
+              Quản Lý Đơn Hàng
+              <i class="fas fa-angle-right right"></i>
+            </p>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</aside>
