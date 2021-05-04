@@ -7,7 +7,7 @@
     </li>
   </ul>
 
-  <ul class="navbar-nav ml-auto">
+  <ul class="navbar-nav ml-auto" *ngIf="authService.currentUser$ | async">
     <li class="nav-item dropdown">
       <a class="nav-link" data-toggle="dropdown" href="#">
         <i class="far fa-user-circle"></i>
@@ -18,7 +18,7 @@
         </small>
 
         <small>
-          <a href="javascript:void(0)" class="dropdown-item">Log Out</a>
+          <a href="javascript:void(0)" class="dropdown-item" (click)="logout()">Log Out</a>
         </small>
       </div>
     </li>

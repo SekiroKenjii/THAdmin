@@ -70,7 +70,7 @@
       </div>
     </div>
   </div>
-  <div class="container">
+  <div class="container" *ngIf="(authService.currentUser$ | async)===null">
     <h1 class="text-center mt-5">Đăng nhập để bắt đầu phiên làm việc</h1>
     <div class="text-center mt-3">
       <button (click)="loginToggle()" class="btn btn-primary btn-lg">Sign In&ensp;
@@ -79,3 +79,4 @@
     </div>
   </div>
 </div>
+<app-login *ngIf="loginMode" (cancelLogin)="cancelLoginMode($event)"></app-login>

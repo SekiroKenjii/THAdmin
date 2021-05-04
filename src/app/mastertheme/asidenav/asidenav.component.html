@@ -7,16 +7,17 @@
   </a>
 
   <div class="sidebar">
-    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex" *ngIf="authService.currentUser$ | async">
       <div class="image">
-        <img class="img-circle elevation-0" src="assets/img/AdminAvatar.jpg" alt="Avatar" />
+        <img class="img-circle elevation-0" src="{{getUserInfo(authService.currentUser$, 'ProfilePicture')}}"
+          alt="Avatar" />
       </div>
       <div class="info">
         <a routerLink="users" class="d-block">
-          Võ Trung Thường
+          {{getUserInfo(authService.currentUser$, 'GivenName')}}
           <!-- {{getFullName(accountService.currentUser$)}} -->
           <!-- <span class="badge badge-danger ml-2">{{getUserRole(accountService.currentUser$)}}</span> -->
-          <span class="badge badge-danger ml-2">admin</span>
+          <span class="badge badge-danger ml-2">{{getUserInfo(authService.currentUser$, 'Role')}}</span>
         </a>
       </div>
     </div>
@@ -32,7 +33,7 @@
             </p>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" *ngIf="authService.currentUser$ | async">
           <a routerLink="dashboard" class="nav-link">
             <i class="nav-icon fas fa-tachometer-alt"></i>
             <p>
@@ -41,7 +42,7 @@
             </p>
           </a>
         </li>
-        <li class="nav-item has-treeview mt-1">
+        <li class="nav-item has-treeview mt-1" *ngIf="authService.currentUser$ | async">
           <a href="javascript:void(0)" class="nav-link">
             <i class="nav-icon fas fa-box-open"></i>
             <p>
@@ -115,7 +116,7 @@
             </li>
           </ul>
         </li>
-        <li class="nav-item has-treeview mt-1">
+        <li class="nav-item has-treeview mt-1" *ngIf="authService.currentUser$ | async">
           <a href="javascript:void(0)" class="nav-link">
             <i class="nav-icon fas fa-user"></i>
             <p>
@@ -153,7 +154,7 @@
             </li>
           </ul>
         </li>
-        <li class="nav-item mt-1">
+        <li class="nav-item mt-1" *ngIf="authService.currentUser$ | async">
           <a routerLink="orders" class="nav-link">
             <i class="nav-icon fas fa-money-bill-alt"></i>
             <p>

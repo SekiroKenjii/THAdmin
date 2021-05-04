@@ -12,7 +12,7 @@ export class ApplicationService {
   handleActiveEvent(): void {
     $(function () {
       var url = window.location;
-      $('li.nav-item a').filter(() => {
+      $('li.nav-item a').filter(function () {
         if (url.pathname === "/") {
           return this.href == `${url}home`;
         }
@@ -20,8 +20,7 @@ export class ApplicationService {
       }).addClass('active');
       $('ul.nav-treeview a').filter(function () {
         return this.href == url;
-      })
-        .parentsUntil(".nav-sidebar > .nav-treeview")
+      }).parentsUntil(".nav-sidebar > .nav-treeview")
         .css({ 'display': 'block' })
         .addClass('menu-open').prev('a')
         .addClass('active');
