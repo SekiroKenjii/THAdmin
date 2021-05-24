@@ -1,0 +1,243 @@
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1><strong>Quản lý thương hiệu</strong></h1>
+      </div>
+      <div class="col-sm-6"></div>
+    </div>
+  </div>
+</section>
+<section class="content">
+  <div class="container-fluid" id="main-container">
+    <div class="row">
+      <app-loading-overlay *ngIf="showOverlay"></app-loading-overlay>
+      <div class="col-6">
+        <div class="card">
+          <form #addForm="ngForm" (ngSubmit)="onAddTrademark(addForm)">
+            <div class="card-header bg-success">
+              <h5 class="card-title"><strong>Thêm mới thương hiệu</strong></h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-7" style="border-right: 1px solid #ced4da;">
+                  <div class="form-group">
+                    <label>Tên thương hiệu</label>
+                    <input type="text" name="name" placeholder="Name" required class="form-control" ngModel />
+                  </div>
+                  <div class="form-group">
+                    <label>Ảnh thương hiệu</label>
+                    <div class="input-group">
+                      <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="trademarkImage"
+                          (change)="fileProgress($event)">
+                        <label class="custom-file-label" for="trademarkImage">Chọn ảnh mới</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Trạng thái</label>
+                    <ng-select name="status" required ngModel>
+                      <ng-option *ngFor="let option of appService.StatusOptions" [value]="option.value">
+                        {{option.name}}</ng-option>
+                    </ng-select>
+                  </div>
+                  <div class="form-group">
+                    <label>Mô tả</label>
+                    <textarea class="form-control" name="description" style="height: 150px" ngModel></textarea>
+                  </div>
+                </div>
+                <div class="col-5">
+                  <div *ngIf="previewUrl && previewUrl !== ''">
+                    <img class="img-fluid pad" [src]="previewUrl" alt="Trademark Logo" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <button [disabled]="addForm.invalid" type="submit" class="btn btn-success float-right">Tạo mới</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="card">
+          <div class="card-header bg-dark">
+            <h3 class="card-title">Danh sách thương hiệu</h3>
+          </div>
+          <app-loading-spinner *ngIf="showSpinner"></app-loading-spinner>
+          <div *ngIf="!showSpinner" class="card-body table-responsive p-0">
+            <table *ngIf="trademarks" class="table table-hover text-nowrap">
+              <thead>
+                <tr>
+                  <th style="min-width: 60px; width: 60px;">#</th>
+                  <th>Tên Thương Hiệu</th>
+                  <th>Trạng Thái</th>
+                  <th style="min-width: 150px; width: 150px;"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let trademark of trademarks">
+                  <td>{{ trademark?.id }}.</td>
+                  <td>{{ trademark?.name }}</td>
+                  <td *ngIf="trademark?.status === 0">InActive</td>
+                  <td *ngIf="trademark?.status === 1">Active</td>
+                  <td class="text-center align-middle">
+                    <div class="btn-group">
+                      <button class="btn btn-primary text-white" (click)="onOpenModal(trademark, 'edit')"
+                        title="Chỉnh Sửa">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="btn btn-info text-white" (click)="onOpenModal(trademark, 'details')"
+                        title="Chi Tiết">
+                        <i class="fas fa-list"></i>
+                      </button>
+                      <button class="btn btn-danger text-white" (click)="onOpenModal(trademark, 'delete')" title="Xoá">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <h4 *ngIf="!trademarks" class="text-center align-middle">Chưa có thương hiệu nào!</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Edit Trademark Modal -->
+<div class="modal fade" id="updateTrademarkModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form #editForm="ngForm" (ngSubmit)="onUpdateTrademark(editForm.value)">
+        <div class="modal-header bg-dark">
+          <h5 class="modal-title"><strong>Chỉnh sửa thương hiệu</strong></h5>
+          <button type="button" class="close" (click)="appService.hideModal('updateTrademarkModal')" aria-label="Close">
+            <span aria-hidden="true" class="text-white">&times;</span>
+          </button>
+        </div>
+        <app-loading-overlay *ngIf="showOverlay"></app-loading-overlay>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-7" style="border-right: 1px solid #ced4da;">
+              <div class="form-group">
+                <label for="name">Tên thương hiệu</label>
+                <input type="text" ngModel="{{editTrademark?.name}}" name="name" class="form-control">
+              </div>
+              <input type="hidden" ngModel="{{editTrademark?.id}}" name="id" class="form-control">
+              <div class="form-group">
+                <label>Ảnh thương hiệu</label>
+                <div class="input-group">
+                  <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="trademarkImage" (change)="fileProgress($event)">
+                    <label class="custom-file-label" for="trademarkImage">Chọn ảnh mới</label>
+                  </div>
+                </div>
+                <!-- <div class="file-upload-wrapper" id="file-upload-wrapper" data-text="Chọn ảnh mới!">
+                  <input type="file" class="file-upload-field" (change)="fileProgress($event)" />
+                </div> -->
+              </div>
+              <div class="form-group">
+                <label *ngIf="editTrademark?.status === 1" class="text-success">Thương hiệu được kích
+                  hoạt</label>
+                <label *ngIf="editTrademark?.status === 0" class="text-danger">Thương hiệu chưa được kích
+                  hoạt</label>
+                <ng-select name="status" required ngModel="{{editTrademark?.status}}">
+                  <ng-option *ngFor="let option of appService.StatusOptions" [value]="option.value">
+                    {{option.name}}</ng-option>
+                </ng-select>
+              </div>
+              <div class="form-group">
+                <label>Mô tả</label>
+                <textarea class="form-control" ngModel="{{editTrademark?.description}}" name="description"
+                  style="height: 150px"></textarea>
+              </div>
+            </div>
+            <div class="col-5">
+              <div *ngIf="previewUrl && previewUrl !== ''">
+                <img class="img-fluid pad" [src]="previewUrl" alt="Trademark Logo" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary"
+            (click)="appService.hideModal('updateTrademarkModal')">Close</button>
+          <button class="btn btn-primary" type="submit">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Trademark Modal -->
+<div class="modal fade" id="deleteTrademarkModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger">
+        <h5 class="modal-title"><strong>Xoá thuơng hiệu</strong></h5>
+        <button type="button" class="close" (click)="appService.hideModal('deleteTrademarkModal')" aria-label="Close">
+          <span aria-hidden="true" class="text-white">&times;</span>
+        </button>
+      </div>
+      <app-loading-overlay *ngIf="showOverlay"></app-loading-overlay>
+      <div class="modal-body">
+        <p>Bạn có chắc muốn xoá thương hiệu: {{deleteTrademark?.name}}?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary"
+          (click)="appService.hideModal('deleteTrademarkModal')">No</button>
+        <button class="btn btn-danger" (click)="onDeleteTrademark(deleteTrademark?.id!)">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Details Trademark Modal -->
+<div class="modal fade" id="detailTrademarkModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-dark">
+        <h5 class="modal-title"><strong>Chi tiết thương hiệu</strong></h5>
+        <button type="button" class="close" (click)="appService.hideModal('detailTrademarkModal')" aria-label="Close">
+          <span aria-hidden="true" class="text-white">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-7" style="border-right: 1px solid #ced4da;">
+            <input type="hidden" ngModel="{{detailTrademark?.id}}" name="id" class="form-control">
+            <div class="form-group">
+              <label>Tên thương hiệu</label>
+              <input type="text" readonly class="form-control" ngModel="{{detailTrademark?.name}}" />
+            </div>
+            <div class="form-group">
+              <label>Trạng thái</label>
+              <input type="text" class="form-control text-danger" *ngIf="detailTrademark?.status === 0" readonly
+                value="InActive" />
+              <input type="text" class="form-control text-success" *ngIf="detailTrademark?.status === 1" readonly
+                value="Active" />
+            </div>
+            <div class="form-group">
+              <label>Mô tả</label>
+              <textarea class="form-control" ngModel="{{detailTrademark?.description}}" readonly
+                style="height: 150px"></textarea>
+            </div>
+          </div>
+          <div class="col-5">
+            <div *ngIf="previewUrl && previewUrl !== ''">
+              <img class="img-fluid pad" [src]="previewUrl" alt="Trademark Logo" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-end">
+        <button type="button" class="btn btn-secondary"
+          (click)="appService.hideModal('detailTrademarkModal')">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
