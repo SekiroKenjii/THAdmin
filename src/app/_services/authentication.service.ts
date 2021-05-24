@@ -1,7 +1,7 @@
 import { UserToken, LoginInfo } from '../_models/loginDto';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {  Observable, ReplaySubject } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
@@ -17,7 +17,7 @@ export class AuthenticationService {
   constructor(private http: HttpClient) { }
 
   authenticate(loginInfo: LoginInfo) {
-    return this.http.post<UserToken>(`${this.baseUrl}/Authentication`, loginInfo).pipe(
+    return this.http.post<UserToken>(`${this.baseUrl}/security/authenticate`, loginInfo).pipe(
       map((response: UserToken) => {
         if (response) {
           localStorage.setItem('userToken', JSON.stringify(response));
@@ -37,7 +37,7 @@ export class AuthenticationService {
   }
 
   refreshToken(creds: any): Observable<UserToken> {
-    return this.http.post<UserToken>(`${this.baseUrl}/Token/Refresh`, creds, {
+    return this.http.post<UserToken>(`${this.baseUrl}/security/token/refresh`, creds, {
       headers: new HttpHeaders({
         "Content-Type": "application/json"
       })

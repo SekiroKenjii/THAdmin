@@ -20,7 +20,7 @@ export class AuthGuard implements CanActivate {
       this.router.navigateByUrl('/');
       return false;
     } else {
-      const token = userToken.accessToken;
+      const token = userToken['accessToken'];
       if (token && !this.jwtHelper.isTokenExpired(token)) {
         return true;
       }
@@ -35,7 +35,7 @@ export class AuthGuard implements CanActivate {
   }
 
   private async tryRefreshingTokens(token: string): Promise<boolean> {
-    const refreshToken: string = JSON.parse(localStorage.getItem("userToken")!).refreshToken;
+    const refreshToken: string = JSON.parse(localStorage.getItem("userToken")!)['refreshToken'];
     if (!token || !refreshToken) {
       return false;
     }

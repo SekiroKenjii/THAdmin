@@ -9,11 +9,18 @@ import { AsidenavComponent } from './mastertheme/asidenav/asidenav.component';
 import { FooterComponent } from './mastertheme/footer/footer.component';
 import { HomeComponent } from './areas/home/home.component';
 import { LoginComponent } from './areas/login/login.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LoadingOverlayComponent } from './mastertheme/loading-overlay/loading-overlay.component';
 import { DashboardComponent } from './areas/dashboard/dashboard.component';
 import { JwtModule } from '@auth0/angular-jwt';
 import { HttpClientModule } from '@angular/common/http';
+import { CategoryComponent } from './areas/product-details/category/category.component';
+import { ConditionComponent } from './areas/product-details/condition/condition.component';
+import { LoadingSpinnerComponent } from './mastertheme/loading-spinner/loading-spinner.component';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { DemandComponent } from './areas/product-details/demand/demand.component';
+import { TrademarkComponent } from './areas/product-details/trademark/trademark.component';
+import { VendorComponent } from './areas/product-details/vendor/vendor.component';
 
 export function tokenGetter() {
   if (JSON.parse(localStorage.getItem("userToken")!) === null) {
@@ -31,16 +38,24 @@ export function tokenGetter() {
     HomeComponent,
     LoginComponent,
     LoadingOverlayComponent,
-    DashboardComponent
+    DashboardComponent,
+    CategoryComponent,
+    ConditionComponent,
+    LoadingSpinnerComponent,
+    DemandComponent,
+    TrademarkComponent,
+    VendorComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    NgSelectModule,
     FormsModule,
+    ReactiveFormsModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot({
-      timeOut: 5000,
+      timeOut: 4000,
       positionClass: 'toast-top-right',
       preventDuplicates: true,
     }),
