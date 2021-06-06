@@ -12,7 +12,7 @@
   <div class="container-fluid" id="main-container">
     <div class="row p-3">
       <app-loading-overlay *ngIf="showOverlay"></app-loading-overlay>
-      <div class="col-6">
+      <div class="col-7">
         <div class="card">
           <form #addForm="ngForm" (ngSubmit)="onAddTrademark(addForm)">
             <div class="card-header bg-dark">
@@ -48,8 +48,8 @@
                   </div>
                 </div>
                 <div class="col-5">
-                  <div *ngIf="previewUrl && previewUrl !== ''">
-                    <img class="img-fluid pad" [src]="previewUrl" alt="Trademark Logo" />
+                  <div *ngIf="previewCreateUrl && previewCreateUrl !== ''">
+                    <img class="img-fluid pad" [src]="previewCreateUrl" alt="New Trademark Logo" />
                   </div>
                 </div>
               </div>
@@ -132,13 +132,11 @@
                 <label>Ảnh thương hiệu</label>
                 <div class="input-group">
                   <div class="custom-file">
-                    <input type="file" class="custom-file-input" id="trademarkImage" (change)="fileProgress($event)">
+                    <input type="file" class="custom-file-input" id="trademarkImage"
+                      (change)="fileProgress($event, 'edit')">
                     <label class="custom-file-label" for="trademarkImage">Chọn ảnh mới</label>
                   </div>
                 </div>
-                <!-- <div class="file-upload-wrapper" id="file-upload-wrapper" data-text="Chọn ảnh mới!">
-                  <input type="file" class="file-upload-field" (change)="fileProgress($event)" />
-                </div> -->
               </div>
               <div class="form-group">
                 <label *ngIf="editTrademark?.status === 1" class="text-success">Thương hiệu được kích
@@ -228,8 +226,8 @@
             </div>
           </div>
           <div class="col-5">
-            <div *ngIf="previewUrl && previewUrl !== ''">
-              <img class="img-fluid pad" [src]="previewUrl" alt="Trademark Logo" />
+            <div *ngIf="detailTrademark?.imageUrl">
+              <img class="img-fluid pad" [src]="detailTrademark?.imageUrl" alt="Trademark Logo" />
             </div>
           </div>
         </div>
