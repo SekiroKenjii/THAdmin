@@ -19,6 +19,7 @@ export class TrademarkComponent implements OnInit {
   public deleteTrademark: Trademark | undefined;
   public fileData: File | undefined;
   public previewUrl: any | undefined;
+  public previewCreateUrl: any | undefined;
   public showSpinner = false;
   public showOverlay = false;
 
@@ -34,18 +35,19 @@ export class TrademarkComponent implements OnInit {
     this.appService.destroyActiveEvent();
   }
 
-  public fileProgress(fileInput: any): void {
+  public fileProgress(fileInput: any, mode: string): void {
     this.appService.getFileName();
     this.fileData = <File>fileInput.target.files[0];
     if (this.fileData != null) {
-      this.imagePreview();
+      this.imagePreview(mode);
     } else {
       this.fileData = null as any;
       this.previewUrl = null as any;
+      this.previewCreateUrl = null as any;
     }
   }
 
-  public imagePreview(): void {
+  public imagePreview(mode: string): void {
     var mimeType = this.fileData?.type;
     if (mimeType?.match(/image\/*/) == null) {
       return;
@@ -53,7 +55,11 @@ export class TrademarkComponent implements OnInit {
     var reader = new FileReader();
     reader.readAsDataURL(this.fileData!);
     reader.onload = (_event) => {
-      this.previewUrl = reader.result;
+      if (mode === 'create') {
+        this.previewCreateUrl = reader.result;
+      } else {
+        this.previewUrl = reader.result;
+      }
     }
   }
 
@@ -163,7 +169,6 @@ export class TrademarkComponent implements OnInit {
     }
     if (mode === 'details') {
       this.detailTrademark = trademark;
-      this.previewUrl = trademark.imageUrl;
       button.setAttribute('data-target', '#detailTrademarkModal');
     }
     if (mode === 'delete') {
