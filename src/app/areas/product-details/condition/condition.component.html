@@ -10,8 +10,7 @@
 </section>
 <section class="content">
   <div class="container-fluid" id="main-container">
-    <app-loading-overlay *ngIf="showOverlay"></app-loading-overlay>
-    <div class="row">
+    <div class="row p-3">
       <div class="col-7">
         <div class="card card-dark">
           <div class="card-header">
@@ -24,9 +23,8 @@
                 <input type="text" name="name" placeholder="Name" required class="form-control" ngModel />
               </div>
               <div class="form-group">
-                <label>Mô tả tình hàng</label>
-                <textarea class="form-control" name="description" placeholder="Description" required ngModel
-                  style="min-height: 250px"></textarea>
+                <label>Mô tả</label>
+                <textarea class="form-control" name="description" style="height: 150px" ngModel></textarea>
               </div>
               <div class="form-group">
                 <button [disabled]="addForm.invalid" type="submit" class="btn btn-success float-right">
@@ -38,18 +36,18 @@
         </div>
       </div>
       <div class="col-5">
-        <div class="card">
-          <div class="card-header bg-dark">
+        <div class="card card-dark">
+          <div class="card-header">
             <h3 class="card-title">Danh sách tình trạng hàng</h3>
           </div>
           <app-loading-spinner *ngIf="showSpinner"></app-loading-spinner>
           <div *ngIf="!showSpinner" class="card-body table-responsive p-0">
-            <table *ngIf="conditions" class="table table-hover text-nowrap">
+            <table *ngIf="conditions" class="table table-bordered table-hover text-nowrap">
               <thead>
                 <tr>
-                  <th style="min-width: 60px; width: 60px;">ID</th>
-                  <th style="min-width: 160px">Tên Tình Trạng Hàng</th>
-                  <th style="min-width: 150px; width: 150px;"></th>
+                  <th style="min-width: 60px;">ID</th>
+                  <th>Tên Tình Trạng Hàng</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>

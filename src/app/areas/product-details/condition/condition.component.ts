@@ -13,9 +13,9 @@ import { NgForm } from '@angular/forms';
 })
 export class ConditionComponent implements OnInit {
 
-  public conditions: Condition[] | undefined;
-  public editCondition: Condition | undefined;
-  public deleteCondition: Condition | undefined;
+  public conditions = {} as Condition[];
+  public editCondition = {} as Condition;
+  public deleteCondition = {} as Condition;
   public showSpinner = false;
   public showOverlay = false;
 

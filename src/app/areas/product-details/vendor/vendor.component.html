@@ -18,7 +18,7 @@
       </div>
       <app-loading-spinner *ngIf="showSpinner"></app-loading-spinner>
       <div *ngIf="!showSpinner" class="card-body table-responsive p-0">
-        <table *ngIf="vendors" class="table table-hover text-nowrap">
+        <table *ngIf="vendors" class="table table-bordered table-hover text-nowrap">
           <thead>
             <tr class="bg-dark">
               <th style="min-width: 60px; width: 60px;">#</th>
@@ -27,7 +27,7 @@
               <th>Chức Vụ</th>
               <th>SĐT</th>
               <th>Địa Chỉ</th>
-              <th style="min-width: 150px; width: 150px;"></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>

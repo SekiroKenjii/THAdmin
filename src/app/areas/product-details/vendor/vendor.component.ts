@@ -13,10 +13,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class VendorComponent implements OnInit {
 
-  public vendors: Vendor[] | undefined;
-  public editVendor: Vendor | undefined;
-  public detailVendor: Vendor | undefined;
-  public deleteVendor: Vendor | undefined;
+  public vendors = {} as Vendor[];
+  public editVendor = {} as Vendor;
+  public detailVendor = {} as Vendor;
+  public deleteVendor = {} as Vendor;
   public showSpinner = false;
   public showOverlay = false;
 

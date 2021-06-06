@@ -13,9 +13,9 @@ import { NgForm } from '@angular/forms';
 })
 export class DemandComponent implements OnInit {
 
-  public demands: Demand[] | undefined;
-  public editDemand: Demand | undefined;
-  public deleteDemand: Demand | undefined;
+  public demands = {} as Demand[];
+  public editDemand = {} as Demand;
+  public deleteDemand = {} as Demand;
   public showSpinner = false;
   public showOverlay = false;
 
