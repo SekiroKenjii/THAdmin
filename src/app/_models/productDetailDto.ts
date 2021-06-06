@@ -32,3 +32,10 @@ export interface Vendor {
   homePage: string;
   status: number;
 }
+export interface ProductDetailsViewModel {
+  categories: Category[];
+  vendors: Vendor[];
+  trademarks: Trademark[];
+  demands: Demand[];
+  conditions: Condition[];
+}

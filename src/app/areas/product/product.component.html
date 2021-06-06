@@ -1,0 +1,60 @@
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1><strong>Quản lý sản phẩm</strong></h1>
+      </div>
+      <div class="col-sm-6"></div>
+    </div>
+  </div>
+</section>
+<section class="content">
+  <div class="container-fluid" id="main-container">
+    <div class="card">
+      <div class="card-header">
+        <button class="btn btn-success float-right" title="Nhập kho">
+          <i class="fas fa-plus"></i> Nhập kho
+        </button>
+      </div>
+      <app-loading-spinner *ngIf="showSpinner"></app-loading-spinner>
+      <div *ngIf="!showSpinner" class="card-body table-responsive p-0">
+        <table *ngIf="products" class="table table-bordered table-hover text-nowrap">
+          <thead>
+            <tr class="bg-dark">
+              <th style="min-width: 20px; width: 20px;">#</th>
+              <th>Tên Sản Phẩm</th>
+              <th>Loại Hàng</th>
+              <th>Nhà Cung Cấp</th>
+              <th>Trạng Thái</th>
+              <th style="min-width: 150px; width: 150px;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let product of products">
+              <td>{{ product?.id }}.</td>
+              <td>{{ product?.name }}</td>
+              <td>{{ product?.category?.name }}</td>
+              <td>{{ product?.vendor?.name }}</td>
+              <td *ngIf="product?.discontinued===true">Ngừng kinh doanh</td>
+              <td *ngIf="product?.discontinued===false">Đang kinh doanh</td>
+              <td class="text-center align-middle">
+                <div class="btn-group">
+                  <button class="btn btn-primary text-white" (click)="onOpenModal(product, 'edit')" title="Chỉnh Sửa">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn btn-info text-white" (click)="onOpenModal(product, 'details')" title="Chi Tiết">
+                    <i class="fas fa-list"></i>
+                  </button>
+                  <button class="btn btn-danger text-white" (click)="onOpenModal(product, 'delete')" title="Xoá">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <h4 *ngIf="!products" class="text-center align-middle">Chưa có sản phẩm nào!</h4>
+      </div>
+    </div>
+  </div>
+</section>

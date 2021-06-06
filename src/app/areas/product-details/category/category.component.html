@@ -11,8 +11,8 @@
 <section class="content">
   <div class="container-fluid" id="main-container">
     <div class="row p-3">
-      <div class="col-md-4">
-        <div class="card card-success">
+      <div class="col-6">
+        <div class="card card-dark">
           <div class="card-header">
             <h3 class="card-title">Thêm mới loại hàng</h3>
           </div>
@@ -23,8 +23,8 @@
                 <input type="text" name="name" placeholder="Name" required class="form-control" ngModel />
               </div>
               <div class="form-group">
-                <label>Mô tả loại hàng</label>
-                <input type="text" name="description" placeholder="Description" required class="form-control" ngModel />
+                <label>Mô tả</label>
+                <textarea class="form-control" name="description" style="height: 150px" ngModel></textarea>
               </div>
               <div class="form-group">
                 <button [disabled]="addForm.invalid" type="submit" class="btn btn-success float-right">
@@ -35,20 +35,20 @@
           </form>
         </div>
       </div>
-      <div class="col-md-8">
-        <div class="card">
+      <div class="col-6">
+        <div class="card card-dark">
           <div class="card-header">
             <h3 class="card-title">Danh sách loại hàng</h3>
           </div>
           <app-loading-spinner *ngIf="showSpinner"></app-loading-spinner>
           <div *ngIf="!showSpinner" class="card-body table-responsive p-0">
-            <table *ngIf="categories" class="table table-hover text-nowrap">
+            <table *ngIf="categories" class="table table-bordered table-hover text-nowrap">
               <thead>
                 <tr>
-                  <th style="min-width: 60px; width: 60px;">ID</th>
-                  <th style="min-width: 160px">Tên Loại Hàng</th>
-                  <th style="min-width: 400px">Mô Tả</th>
-                  <th style="min-width: 150px; width: 150px;"></th>
+                  <th style="min-width: 60px;">ID</th>
+                  <th>Tên Loại Hàng</th>
+                  <th>Mô Tả</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>

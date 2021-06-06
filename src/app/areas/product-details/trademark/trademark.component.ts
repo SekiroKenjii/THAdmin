@@ -13,10 +13,10 @@ import { NgForm } from '@angular/forms';
 })
 export class TrademarkComponent implements OnInit {
 
-  public trademarks: Trademark[] | undefined;
-  public editTrademark: Trademark | undefined;
-  public detailTrademark: Trademark | undefined;
-  public deleteTrademark: Trademark | undefined;
+  public trademarks = {} as Trademark[];
+  public editTrademark = {} as Trademark;
+  public detailTrademark = {} as Trademark;
+  public deleteTrademark = {} as Trademark;
   public fileData: File | undefined;
   public previewUrl: any | undefined;
   public showSpinner = false;

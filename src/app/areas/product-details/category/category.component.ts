@@ -13,9 +13,9 @@ import { NgForm } from '@angular/forms';
 })
 export class CategoryComponent implements OnInit {
 
-  public categories: Category[] | undefined;
-  public editCategory: Category | undefined;
-  public deleteCategory: Category | undefined;
+  public categories = {} as Category[];
+  public editCategory = {} as Category;
+  public deleteCategory = {} as Category;
   public showSpinner = false;
   public showOverlay = false;
 

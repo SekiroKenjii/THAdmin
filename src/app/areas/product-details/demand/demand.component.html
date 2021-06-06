@@ -25,12 +25,12 @@
       </div>
       <app-loading-spinner *ngIf="showSpinner"></app-loading-spinner>
       <div *ngIf="!showSpinner" class="card-body table-responsive p-0">
-        <table *ngIf="demands" class="table table-hover text-nowrap">
+        <table *ngIf="demands" class="table table-bordered table-hover text-nowrap">
           <thead>
             <tr class="bg-dark">
-              <th style="min-width: 60px; width: 60px;">#</th>
-              <th style="min-width: 200px">Tên nhu cầu</th>
-              <th style="min-width: 150px; width: 150px;"></th>
+              <th style="min-width: 60px;">#</th>
+              <th>Tên nhu cầu</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>

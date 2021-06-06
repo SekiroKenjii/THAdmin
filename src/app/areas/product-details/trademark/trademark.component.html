@@ -10,13 +10,13 @@
 </section>
 <section class="content">
   <div class="container-fluid" id="main-container">
-    <div class="row">
+    <div class="row p-3">
       <app-loading-overlay *ngIf="showOverlay"></app-loading-overlay>
       <div class="col-6">
         <div class="card">
           <form #addForm="ngForm" (ngSubmit)="onAddTrademark(addForm)">
-            <div class="card-header bg-success">
-              <h5 class="card-title"><strong>Thêm mới thương hiệu</strong></h5>
+            <div class="card-header bg-dark">
+              <h3 class="card-title">Thêm mới thương hiệu</h3>
             </div>
             <div class="card-body">
               <div class="row">
@@ -29,9 +29,9 @@
                     <label>Ảnh thương hiệu</label>
                     <div class="input-group">
                       <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="trademarkImage"
+                        <input type="file" class="custom-file-input" id="createTrademarkImage"
                           (change)="fileProgress($event)">
-                        <label class="custom-file-label" for="trademarkImage">Chọn ảnh mới</label>
+                        <label class="custom-file-label" for="createTrademarkImage">Chọn ảnh mới</label>
                       </div>
                     </div>
                   </div>
@@ -61,19 +61,19 @@
         </div>
       </div>
       <div class="col-6">
-        <div class="card">
-          <div class="card-header bg-dark">
+        <div class="card card-dark">
+          <div class="card-header">
             <h3 class="card-title">Danh sách thương hiệu</h3>
           </div>
           <app-loading-spinner *ngIf="showSpinner"></app-loading-spinner>
           <div *ngIf="!showSpinner" class="card-body table-responsive p-0">
-            <table *ngIf="trademarks" class="table table-hover text-nowrap">
+            <table *ngIf="trademarks" class="table table-bordered table-hover text-nowrap">
               <thead>
                 <tr>
                   <th style="min-width: 60px; width: 60px;">#</th>
                   <th>Tên Thương Hiệu</th>
                   <th>Trạng Thái</th>
-                  <th style="min-width: 150px; width: 150px;"></th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>

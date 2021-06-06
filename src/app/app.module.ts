@@ -21,6 +21,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { DemandComponent } from './areas/product-details/demand/demand.component';
 import { TrademarkComponent } from './areas/product-details/trademark/trademark.component';
 import { VendorComponent } from './areas/product-details/vendor/vendor.component';
+import { ProductComponent } from './areas/product/product.component';
 
 export function tokenGetter() {
   if (JSON.parse(localStorage.getItem("userToken")!) === null) {
@@ -44,7 +45,8 @@ export function tokenGetter() {
     LoadingSpinnerComponent,
     DemandComponent,
     TrademarkComponent,
-    VendorComponent
+    VendorComponent,
+    ProductComponent
   ],
   imports: [
     BrowserModule,
