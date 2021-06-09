@@ -12,12 +12,17 @@ import { Product } from 'src/app/_models/productDto';
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
-  styleUrls: []
+  styleUrls: ['product.component.scss']
 })
 export class ProductComponent implements OnInit {
 
   public products = {} as Product[];
+  public editProducts = {} as Product;
+  public detailsProduct = {} as Product;
+  public deleteProduct = {} as Product;
   public productDetails = {} as ProductDetailsViewModel;
+  public partialToggle = '' as string;
+  public openEditPage = false;
   public showSpinner = false;
   public showOverlay = false;
 
@@ -49,7 +54,7 @@ export class ProductComponent implements OnInit {
     );
   }
 
-  private tryGetProductDetails(): void {
+  public tryGetProductDetails(): void {
     try {
       this.productDetailService.getCategories().subscribe(
         categories => this.productDetails.categories = categories
@@ -69,7 +74,7 @@ export class ProductComponent implements OnInit {
     } catch (ex) {
       this.notification.customNotification.fire({
         title: 'Tải chi tiết sản phẩm bị lỗi!',
-        text: "Vui lòng kiểm tra lại tệp tin log để biết thêm chi tiết!",
+        text: "Vui lòng kiểm tra lại tệp tin 'LOG' để biết thêm chi tiết!",
         icon: 'error',
         showCloseButton: true,
         confirmButtonText: `Tải lại`,
@@ -81,12 +86,80 @@ export class ProductComponent implements OnInit {
     }
   }
 
-  public onOpenModal(product: Product, mode: string): void {
+  public onAddProduct(addForm: NgForm): void {
+    this.showOverlay = true;
+    this.productService.addProduct(addForm.value).subscribe(
+      (response: Response) => {
+        console.log(`create product response with code: ${response.status}`);
+        this.toastr.success('Thêm sản phẩm mới thành công');
+        this.getProducts();
+        addForm.reset();
+        this.showOverlay = false;
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error.error);
+        this.showOverlay = false;
+        this.toastr.error(error.error, 'Thêm sản phẩm thất bại');
+      }
+    );
+  }
+
+  public onDeleteProduct(productId: number): void {
+    this.showOverlay = true;
+    this.productService.deleteProduct(productId).subscribe(
+      (response: Response) => {
+        console.log(`delete product response with code: ${response.status}`);
+        this.toastr.success('Xoá sản phẩm thành công');
+        this.getProducts();
+        this.showOverlay = false;
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error.error);
+        this.showOverlay = false;
+        this.toastr.error(error.error, 'Xoá sản phẩm thất bại');
+      }
+    );
+  }
+
+  public onOpenEditPage(product: Product): void {
+    this.editProducts = product;
+    this.openEditPage = true;
+  }
+
+  public onCloseEditPage(event: any): void {
+    if (event === 'closeEditPage') {
+      this.editProducts = {} as Product;
+      this.getProducts();
+      this.openEditPage = false;
+    }
+  }
+
+  public onCloseDetailsPage(target: string): void {
+    this.detailsProduct = {} as Product;
+    this.appService.hideModal(target);
+  }
+
+  public onOpenModal(mode: string, partial?: string, product?: Product): void {
     const container = document.getElementById('main-container')!;
     const button = document.createElement('button');
     button.type = 'button';
     button.style.display = 'none';
     button.setAttribute('data-toggle', 'modal');
+    if (mode === 'create') {
+      button.setAttribute('data-target', '#GoodsReceiptModal');
+    }
+    if (mode === 'openPartialModal') {
+      this.partialToggle = partial!;
+      button.setAttribute('data-target', '#partialProductDetailsModal');
+    }
+    if (mode === 'details') {
+      this.detailsProduct = product!;
+      button.setAttribute('data-target', '#detailsProductModal');
+    }
+    if (mode === 'delete') {
+      this.deleteProduct = product!;
+      button.setAttribute('data-target', '#deleteProductModal');
+    }
     container.appendChild(button);
     button.click();
   }

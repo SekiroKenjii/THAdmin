@@ -22,6 +22,8 @@ import { DemandComponent } from './areas/product-details/demand/demand.component
 import { TrademarkComponent } from './areas/product-details/trademark/trademark.component';
 import { VendorComponent } from './areas/product-details/vendor/vendor.component';
 import { ProductComponent } from './areas/product/product.component';
+import { EditProductComponent } from './areas/product/edit-product/edit-product.component';
+import { EditProductImageComponent } from './areas/product/edit-product/edit-product-image/edit-product-image.component';
 
 export function tokenGetter() {
   if (JSON.parse(localStorage.getItem("userToken")!) === null) {
@@ -46,7 +48,9 @@ export function tokenGetter() {
     DemandComponent,
     TrademarkComponent,
     VendorComponent,
-    ProductComponent
+    ProductComponent,
+    EditProductComponent,
+    EditProductImageComponent
   ],
   imports: [
     BrowserModule,
