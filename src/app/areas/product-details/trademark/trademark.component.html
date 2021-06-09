@@ -11,13 +11,13 @@
 <section class="content">
   <div class="container-fluid" id="main-container">
     <div class="row p-3">
-      <app-loading-overlay *ngIf="showOverlay"></app-loading-overlay>
-      <div class="col-7">
+      <div class="col-6">
         <div class="card">
           <form #addForm="ngForm" (ngSubmit)="onAddTrademark(addForm)">
             <div class="card-header bg-dark">
               <h3 class="card-title">Thêm mới thương hiệu</h3>
             </div>
+            <app-loading-overlay *ngIf="showOverlay"></app-loading-overlay>
             <div class="card-body">
               <div class="row">
                 <div class="col-7" style="border-right: 1px solid #ced4da;">
@@ -30,7 +30,7 @@
                     <div class="input-group">
                       <div class="custom-file">
                         <input type="file" class="custom-file-input" id="createTrademarkImage"
-                          (change)="fileProgress($event)">
+                          (change)="fileProgress($event, 'create')">
                         <label class="custom-file-label" for="createTrademarkImage">Chọn ảnh mới</label>
                       </div>
                     </div>

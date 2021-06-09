@@ -10,7 +10,7 @@ export interface Product {
   vendor: Vendor
   trademarkId: number;
   trademark: Trademark;
-  demandid: number;
+  demandId: number;
   demand: Demand;
   conditionId: number;
   condition: Condition;

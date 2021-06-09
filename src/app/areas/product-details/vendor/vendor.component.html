@@ -67,7 +67,7 @@
       <form #addForm="ngForm" (ngSubmit)="onAddVendor(addForm)">
         <div class="modal-header bg-dark">
           <h5 class="modal-title"><strong>Thêm nhà cung cấp</strong></h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <button type="button" class="close" (click)="appService.hideModal('addVendorModal')" aria-label="Close">
             <span aria-hidden="true" class="text-white">&times;</span>
           </button>
         </div>
@@ -133,7 +133,8 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-secondary"
+            (click)="appService.hideModal('addVendorModal')">Close</button>
           <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary">Tạo mới</button>
         </div>
       </form>
@@ -239,7 +240,7 @@
     <div class="modal-content">
       <div class="modal-header bg-danger">
         <h5 class="modal-title"><strong>Xoá nhà cung cấp</strong></h5>
-        <button type="button" class="close" (click)="appService.hideModal('updateVendorModal')" aria-label="Close">
+        <button type="button" class="close" (click)="appService.hideModal('deleteVendorModal')" aria-label="Close">
           <span aria-hidden="true" class="text-white">&times;</span>
         </button>
       </div>
@@ -248,7 +249,7 @@
         <p>Bạn có chắc muốn xoá nhà cung cấp: {{deleteVendor?.name}}?</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="appService.hideModal('updateVendorModal')">No</button>
+        <button type="button" class="btn btn-secondary" (click)="appService.hideModal('deleteVendorModal')">No</button>
         <button class="btn btn-danger" (click)="onDeleteVendor(deleteVendor?.id!)">Yes</button>
       </div>
     </div>
