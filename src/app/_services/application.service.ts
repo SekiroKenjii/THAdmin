@@ -27,6 +27,7 @@ export class ApplicationService {
   ];
 
   public SubRoleOptions: NgOption[] = [
+    { name: "Admin" },
     { name: "Warehouse Staff" },
     { name: "Customer Officer" }
   ];
@@ -65,7 +66,8 @@ export class ApplicationService {
 
   isModelChanged(current: any, formValue: any): boolean {
     for (let i in current) {
-      if (typeof current[i] !== 'undefined' && typeof formValue[i] !== 'undefined') {
+      if (typeof current[i] !== 'undefined' && typeof formValue[i] !== 'undefined' &&
+        current[i] !== null && formValue[i] !== null) {
         if (current[i].toString().trim() !== formValue[i].toString().trim()) {
           return true;
         }
