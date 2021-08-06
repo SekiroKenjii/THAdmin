@@ -1,0 +1,133 @@
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-3">
+      <div class="col-sm-6">
+        <h1><strong>Quản lý tình trạng hàng</strong></h1>
+      </div>
+      <div class="col-sm-6"></div>
+    </div>
+  </div>
+</section>
+<section class="content">
+  <div class="container-fluid" id="main-container">
+    <div class="row p-3">
+      <div class="col-7">
+        <div class="card card-dark">
+          <div class="card-header">
+            <h3 class="card-title">Thêm mới tình loại hàng</h3>
+          </div>
+          <form #addForm="ngForm" (ngSubmit)="onAddCondition(addForm)">
+            <div class="card-body p-3 mb-3">
+              <div class="form-group">
+                <label>Tên tình trạng hàng</label>
+                <input type="text" name="name" placeholder="Name" required class="form-control" ngModel />
+              </div>
+              <div class="form-group">
+                <label>Mô tả</label>
+                <textarea class="form-control" name="description" style="height: 150px" ngModel></textarea>
+              </div>
+              <div class="form-group">
+                <button [disabled]="addForm.invalid" type="submit" class="btn btn-success float-right">
+                  <i class="fas fa-plus"></i> Tạo mới
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="col-5">
+        <div class="card card-dark">
+          <div class="card-header">
+            <h3 class="card-title">Danh sách tình trạng hàng</h3>
+          </div>
+          <app-loading-spinner *ngIf="showSpinner"></app-loading-spinner>
+          <div *ngIf="!showSpinner" class="card-body table-responsive p-0">
+            <table *ngIf="conditions" class="table table-bordered table-hover text-nowrap">
+              <thead>
+                <tr>
+                  <th style="min-width: 60px;">ID</th>
+                  <th>Tên Tình Trạng Hàng</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let condition of conditions">
+                  <td>{{ condition?.id }}.</td>
+                  <td>{{ condition?.name }}</td>
+                  <td class="text-center align-middle">
+                    <div class="btn-group">
+                      <button class="btn btn-primary text-white" (click)="onOpenModal(condition, 'edit')"
+                        title="Chỉnh Sửa"><i class="fas fa-edit"></i>
+                      </button>
+                      <button class="btn btn-danger text-white" (click)="onOpenModal(condition, 'delete')" title="Xoá">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <h4 *ngIf="!conditions" class="text-center align-middle">Chưa có tình trạng hàng nào!</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Edit Condition Modal -->
+<div class="modal fade" id="updateConditionModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form #editForm="ngForm" (ngSubmit)="onUpdateCondition(editForm.value)">
+        <div class="modal-header bg-dark">
+          <h5 class="modal-title"><strong>Chỉnh sửa tình trạng hàng</strong></h5>
+          <button type="button" class="close" (click)="appService.hideModal('updateConditionModal')" aria-label="Close">
+            <span aria-hidden="true" class="text-white">&times;</span>
+          </button>
+        </div>
+        <app-loading-overlay *ngIf="showOverlay"></app-loading-overlay>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="name">Tên tình trạng</label>
+            <input type="text" ngModel="{{editCondition?.name}}" name="name" class="form-control">
+          </div>
+          <input type="hidden" ngModel="{{editCondition?.id}}" name="id" class="form-control">
+          <div class="form-group">
+            <label for="description">Mô tả loại hàng</label>
+            <input type="text" ngModel="{{editCondition?.description}}" name="description" class="form-control"
+              placeholder="Description">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary"
+            (click)="appService.hideModal('updateConditionModal')">Close</button>
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Category Modal -->
+<div class="modal fade" id="deleteConditionModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger">
+        <h5 class="modal-title"><strong>Xoá tình trạng hàng</strong></h5>
+        <button type="button" class="close" (click)="appService.hideModal('deleteConditionModal')" aria-label="Close">
+          <span aria-hidden="true" class="text-white">&times;</span>
+        </button>
+      </div>
+      <app-loading-overlay *ngIf="showOverlay"></app-loading-overlay>
+      <div class="modal-body">
+        <p>Bạn có chắc muốn tình trạng hàng: {{deleteCondition?.name}}?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary"
+          (click)="appService.hideModal('deleteConditionModal')">No</button>
+        <button class="btn btn-danger" (click)="onDeleteCondition(deleteCondition?.id!)">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>

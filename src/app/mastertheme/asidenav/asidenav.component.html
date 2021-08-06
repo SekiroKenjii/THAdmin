@@ -2,21 +2,23 @@
   <a class="brand-link" routerLink="home">
     <img src="assets/img/logo.png" alt="TGAdmim Logo" class="brand-image img-circle elevation-0" style="opacity: 0.8" />
     <div>
-      <span class="brand-text">TGAdmin App</span>
+      <span class="brand-text">THPro Management</span>
     </div>
   </a>
 
   <div class="sidebar">
-    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex" *ngIf="authService.currentUser$ | async">
       <div class="image">
-        <img class="img-circle elevation-0" src="assets/img/AdminAvatar.jpg" alt="Avatar" />
+        <img class="img-circle elevation-0" src="{{getUserInfo(authService.currentUser$, 'ProfilePicture')}}"
+          alt="Avatar" />
       </div>
       <div class="info">
         <a routerLink="users" class="d-block">
-          Võ Trung Thường
+          {{getUserInfo(authService.currentUser$, 'GivenName')}}
           <!-- {{getFullName(accountService.currentUser$)}} -->
           <!-- <span class="badge badge-danger ml-2">{{getUserRole(accountService.currentUser$)}}</span> -->
-          <span class="badge badge-danger ml-2">admin</span>
+          <span class="badge badge-danger ml-2">{{getUserInfo(authService.currentUser$,
+            'http://schemas.microsoft.com/ws/2008/06/identity/claims/role')}}</span>
         </a>
       </div>
     </div>
@@ -32,7 +34,7 @@
             </p>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" *ngIf="authService.currentUser$ | async">
           <a routerLink="dashboard" class="nav-link">
             <i class="nav-icon fas fa-tachometer-alt"></i>
             <p>
@@ -41,9 +43,9 @@
             </p>
           </a>
         </li>
-        <li class="nav-item has-treeview mt-1">
+        <li class="nav-item has-treeview mt-1" *ngIf="authService.currentUser$ | async">
           <a href="javascript:void(0)" class="nav-link">
-            <i class="nav-icon fas fa-box-open"></i>
+            <i class="nav-icon fas fa-barcode"></i>
             <p>
               Quản Lý Sản Phẩm
               <i class="fas fa-angle-down right"></i>
@@ -55,7 +57,7 @@
                 <i class="fas fa-caret-right nav-icon"></i>
                 <p>
                   Sản Phẩm
-                  <i class="fas fa-cube right"></i>
+                  <i class="fas fa-barcode right"></i>
                 </p>
               </a>
             </li>
@@ -96,15 +98,6 @@
               </a>
             </li>
             <li class="nav-item">
-              <a routerLink="prodtags" class="nav-link">
-                <i class="fas fa-caret-right nav-icon"></i>
-                <p>
-                  Nhãn Sản Phẩm
-                  <i class="fas fa-tags right"></i>
-                </p>
-              </a>
-            </li>
-            <li class="nav-item">
               <a routerLink="demands" class="nav-link">
                 <i class="fas fa-caret-right nav-icon"></i>
                 <p>
@@ -115,7 +108,7 @@
             </li>
           </ul>
         </li>
-        <li class="nav-item has-treeview mt-1">
+        <li class="nav-item has-treeview mt-1" *ngIf="authService.currentUser$ | async">
           <a href="javascript:void(0)" class="nav-link">
             <i class="nav-icon fas fa-user"></i>
             <p>
@@ -143,7 +136,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a routerLink="users/customer" class="nav-link">
+              <a routerLink="user/customers" class="nav-link">
                 <i class="fas fa-caret-right nav-icon"></i>
                 <p>
                   Khách hàng
@@ -153,7 +146,7 @@
             </li>
           </ul>
         </li>
-        <li class="nav-item mt-1">
+        <li class="nav-item mt-1" *ngIf="authService.currentUser$ | async">
           <a routerLink="orders" class="nav-link">
             <i class="nav-icon fas fa-money-bill-alt"></i>
             <p>

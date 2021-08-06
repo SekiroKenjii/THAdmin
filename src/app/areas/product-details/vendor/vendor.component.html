@@ -1,0 +1,334 @@
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1><strong>Quản lý thương hiệu</strong></h1>
+      </div>
+      <div class="col-sm-6"></div>
+    </div>
+  </div>
+</section>
+<section class="content">
+  <div class="container-fluid" id="main-container">
+    <div class="card">
+      <div class="card-header">
+        <button class="btn btn-success float-right" (click)="onOpenModal(null!, 'add')" title="Thêm mới">
+          <i class="fas fa-plus"></i> Thêm mới
+        </button>
+      </div>
+      <app-loading-spinner *ngIf="showSpinner"></app-loading-spinner>
+      <div *ngIf="!showSpinner" class="card-body table-responsive p-0">
+        <table *ngIf="vendors" class="table table-bordered table-hover text-nowrap">
+          <thead>
+            <tr class="bg-dark">
+              <th style="min-width: 60px; width: 60px;">#</th>
+              <th>Tên Nhà Cung Cấp</th>
+              <th>Tên Liên Hệ</th>
+              <th>Chức Vụ</th>
+              <th>SĐT</th>
+              <th>Địa Chỉ</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let vendor of vendors">
+              <td>{{ vendor?.id }}.</td>
+              <td>{{ vendor?.name }}</td>
+              <td>{{ vendor?.contactName }}</td>
+              <td>{{ vendor?.contactTitle }}</td>
+              <td>{{ vendor?.phoneNumber }}</td>
+              <td>{{ vendor?.address }}</td>
+              <td class="text-center align-middle">
+                <div class="btn-group">
+                  <button class="btn btn-primary text-white" (click)="onOpenModal(vendor, 'edit')" title="Chỉnh Sửa">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn btn-info text-white" (click)="onOpenModal(vendor, 'details')" title="Chi Tiết">
+                    <i class="fas fa-list"></i>
+                  </button>
+                  <button class="btn btn-danger text-white" (click)="onOpenModal(vendor, 'delete')" title="Xoá">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <h4 *ngIf="!vendors" class="text-center align-middle">Chưa có nhà cung cấp nào!</h4>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Add Vendor Modal -->
+<div class="modal fade" id="addVendorModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form #addForm="ngForm" (ngSubmit)="onAddVendor(addForm)">
+        <div class="modal-header bg-dark">
+          <h5 class="modal-title"><strong>Thêm nhà cung cấp</strong></h5>
+          <button type="button" class="close" (click)="appService.hideModal('addVendorModal')" aria-label="Close">
+            <span aria-hidden="true" class="text-white">&times;</span>
+          </button>
+        </div>
+        <app-loading-overlay *ngIf="showOverlay"></app-loading-overlay>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="name">Tên nhà cung cấp</label>
+            <input type="text" name="name" placeholder="Tên nhà cung cấp" required class="form-control" ngModel />
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label>Tên liên hệ</label>
+                <input type="text" name="contactName" placeholder="Tên liên hệ" required class="form-control" ngModel />
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label>Chức vụ</label>
+                <input type="text" name="contactTitle" placeholder="Chức vụ" required class="form-control" ngModel />
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Địa chỉ</label>
+            <input type="text" name="address" placeholder="Địa chỉ" required class="form-control" ngModel />
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label>Thành phố</label>
+                <input type="text" name="city" placeholder="Thành phố" required class="form-control" ngModel />
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label>Quốc gia</label>
+                <input type="text" name="country" placeholder="Quốc gia" class="form-control" ngModel />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label>Trang chủ</label>
+                <input type="text" name="homePage" placeholder="Trang chủ" class="form-control" ngModel />
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label>Số điện thoại</label>
+                <input type="text" name="phoneNumber" placeholder="Số điện thoại" required class="form-control"
+                  ngModel />
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Trạng thái</label>
+            <ng-select name="status" required ngModel>
+              <ng-option *ngFor="let option of appService.StatusOptions" [value]="option.value">{{option.name}}
+              </ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary"
+            (click)="appService.hideModal('addVendorModal')">Close</button>
+          <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary">Tạo mới</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Vendor Modal -->
+<div class="modal fade" id="updateVendorModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form #editForm="ngForm" (ngSubmit)="onUpdateVendor(editForm.value)">
+        <div class="modal-header bg-dark">
+          <h5 class="modal-title"><strong>Chỉnh sửa nhà cung cấp</strong></h5>
+          <button type="button" class="close" (click)="appService.hideModal('updateVendorModal')" aria-label="Close">
+            <span aria-hidden="true" class="text-white">&times;</span>
+          </button>
+        </div>
+        <app-loading-overlay *ngIf="showOverlay"></app-loading-overlay>
+        <div class="modal-body">
+          <input type="hidden" name="id" ngModel="{{editVendor?.id}}" class="form-control">
+          <div class="form-group">
+            <label for="name">Tên nhà cung cấp</label>
+            <input type="text" name="name" placeholder="Tên nhà cung cấp" required class="form-control"
+              ngModel="{{editVendor?.name}}" />
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label>Tên liên hệ</label>
+                <input type="text" name="contactName" placeholder="Tên liên hệ" required class="form-control"
+                  ngModel="{{editVendor?.contactName}}" />
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label>Chức vụ</label>
+                <input type="text" name="contactTitle" placeholder="Chức vụ" required class="form-control"
+                  ngModel="{{editVendor?.contactTitle}}" />
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Địa chỉ</label>
+            <input type="text" name="address" placeholder="Địa chỉ" required class="form-control"
+              ngModel="{{editVendor?.address}}" />
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label>Thành phố</label>
+                <input type="text" name="city" placeholder="Thành phố" required class="form-control"
+                  ngModel="{{editVendor?.city}}" />
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label>Quốc gia</label>
+                <input type="text" name="country" placeholder="Quốc gia" class="form-control"
+                  ngModel="{{editVendor?.country}}" />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label>Trang chủ</label>
+                <input type="text" name="homePage" placeholder="Trang chủ" class="form-control"
+                  ngModel="{{editVendor?.homePage}}" />
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label>Số điện thoại</label>
+                <input type="text" name="phoneNumber" placeholder="Số điện thoại" required class="form-control"
+                  ngModel="{{editVendor?.phoneNumber}}" />
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label *ngIf="editVendor?.status === 1" class="text-success">Nhà cung cấp được kích hoạt</label>
+            <label *ngIf="editVendor?.status === 0" class="text-danger">Nhà cung cấp chưa được kích hoạt</label>
+            <ng-select name="status" required ngModel="{{editVendor?.status}}">
+              <ng-option *ngFor="let option of appService.StatusOptions" [value]="option.value">
+                {{option.name}}
+              </ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary"
+            (click)="appService.hideModal('updateVendorModal')">Close</button>
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Vendor Modal -->
+<div class="modal fade" id="deleteVendorModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger">
+        <h5 class="modal-title"><strong>Xoá nhà cung cấp</strong></h5>
+        <button type="button" class="close" (click)="appService.hideModal('deleteVendorModal')" aria-label="Close">
+          <span aria-hidden="true" class="text-white">&times;</span>
+        </button>
+      </div>
+      <app-loading-overlay *ngIf="showOverlay"></app-loading-overlay>
+      <div class="modal-body">
+        <p>Bạn có chắc muốn xoá nhà cung cấp: {{deleteVendor?.name}}?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="appService.hideModal('deleteVendorModal')">No</button>
+        <button class="btn btn-danger" (click)="onDeleteVendor(deleteVendor?.id!)">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Details Vendor Modal -->
+<div class="modal fade" id="detailVendorModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-dark">
+        <h5 class="modal-title"><strong>Chi tiết nhà cung cấp</strong></h5>
+        <button type="button" class="close" (click)="appService.hideModal('detailVendorModal')" aria-label="Close">
+          <span aria-hidden="true" class="text-white">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="name">Tên nhà cung cấp</label>
+          <input type="text" readonly class="form-control" value="{{detailVendor?.name}}" />
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <div class="form-group">
+              <label>Tên liên hệ</label>
+              <input type="text" value="{{detailVendor?.contactName}}" readonly class="form-control" />
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group">
+              <label>Chức vụ</label>
+              <input type="text" value="{{detailVendor?.contactTitle}}" readonly class="form-control" />
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Địa chỉ</label>
+          <input type="text" value="{{detailVendor?.address}}" readonly class="form-control" />
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <div class="form-group">
+              <label>Thành phố</label>
+              <input type="text" value="{{detailVendor?.city}}" readonly class="form-control" />
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group">
+              <label>Quốc gia</label>
+              <input type="text" value="{{detailVendor?.country}}" readonly class="form-control" />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <div class="form-group">
+              <label>Trang chủ</label>
+              <input type="text" value="{{detailVendor?.homePage}}" readonly class="form-control" />
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group">
+              <label>Số điện thoại</label>
+              <input type="text" value="{{detailVendor?.phoneNumber}}" readonly class="form-control" />
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Trạng thái</label>
+          <input type="text" class="form-control text-danger" *ngIf="detailVendor?.status === 0" readonly
+            value="Nhà cung cấp chưa được kích hoạt" />
+          <input type="text" class="form-control text-success" *ngIf="detailVendor?.status === 1" readonly
+            value="Nhà cung cấp đã được kích hoạt" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary"
+          (click)="appService.hideModal('detailVendorModal')">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

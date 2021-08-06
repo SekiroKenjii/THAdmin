@@ -1,0 +1,137 @@
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1><strong>Quản lý quyền trang web</strong></h1>
+      </div>
+      <div class="col-sm-6"></div>
+    </div>
+  </div>
+</section>
+<section class="content">
+  <div class="container-fluid" id="main-container">
+    <div class="card">
+      <div class="card-header">
+        <button class="btn btn-success float-right" (click)="onOpenModal(null, 'add')" title="Thêm mới">
+          <i class="fas fa-plus"></i> Thêm mới
+        </button>
+      </div>
+      <app-loading-spinner *ngIf="showSpinner"></app-loading-spinner>
+      <div *ngIf="!showSpinner" class="card-body table-responsive p-0">
+        <table *ngIf="roles" class="table table-bordered">
+          <thead>
+            <tr class="bg-dark">
+              <th style="min-width: 200px">Tên Quyền</th>
+              <th style="min-width: 500px">Mô Tả</th>
+              <th style="min-width: 150px; width: 150px;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let role of roles">
+              <td>{{ role?.name }}</td>
+              <td>{{ role?.description }}</td>
+              <td class="text-center align-middle">
+                <div class="btn-group">
+                  <button class="btn btn-primary text-white" (click)="onOpenModal(role, 'edit')" title="Chỉnh Sửa">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn btn-danger text-white" (click)="onOpenModal(role, 'delete')" title="Xoá">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <h4 *ngIf="!roles" class="text-center align-middle">Chưa có quyền nào!</h4>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Add Role Modal -->
+<div class="modal fade" id="addRoleModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form #addForm="ngForm" (ngSubmit)="onAddRole(addForm)">
+        <div class="modal-header bg-dark">
+          <h5 class="modal-title"><strong>Thêm quyền mới</strong></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true" class="text-white">&times;</span>
+          </button>
+        </div>
+        <app-loading-overlay *ngIf="showOverlay"></app-loading-overlay>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Tên quyền</label>
+            <input type="text" name="name" placeholder="Name" required class="form-control" ngModel />
+          </div>
+          <div class="form-group">
+            <label>Mô tả quyền</label>
+            <input type="text" name="description" placeholder="Description" class="form-control" ngModel />
+          </div>
+        </div>
+        <div class="modal-footer justify-content-end">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary">Tạo mới</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Role Modal -->
+<div class="modal fade" id="updateRoleModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form #editForm="ngForm" (ngSubmit)="onUpdateRole(editForm.value)">
+        <div class="modal-header bg-dark">
+          <h5 class="modal-title"><strong>Chỉnh sửa quyền</strong></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true" class="text-white">&times;</span>
+          </button>
+        </div>
+        <app-loading-overlay *ngIf="showOverlay"></app-loading-overlay>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="name">Tên quyền</label>
+            <input type="text" ngModel="{{editRole?.name}}" name="name" class="form-control" placeholder="Name">
+          </div>
+          <input type="hidden" ngModel="{{editRole?.id}}" name="id" class="form-control">
+          <div class="form-group">
+            <label for="description">Mô tả quyền</label>
+            <input type="text" ngModel="{{editRole?.description}}" name="description" class="form-control"
+              placeholder="Description">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Role Modal -->
+<div class="modal fade" id="deleteRoleModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger">
+        <h5 class="modal-title"><strong>Xoá quyền</strong></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="text-white">&times;</span>
+        </button>
+      </div>
+      <app-loading-overlay *ngIf="showOverlay"></app-loading-overlay>
+      <div class="modal-body">
+        <p>Bạn có chắc muốn xoá quyền: <u><b>{{deleteRole?.name.toUpperCase()}}</b></u>?</p>
+        <strong class="text-danger"><u>CHÚ Ý:</u> Mọi người dùng thuộc quyền này sẽ <u>BỊ XOÁ</u> theo!</strong>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        <button class="btn btn-danger" (click)="onDeleteRole(deleteRole?.id)">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>

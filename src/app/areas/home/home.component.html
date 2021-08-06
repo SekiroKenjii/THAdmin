@@ -6,7 +6,7 @@
     <div class="card-body row">
       <div class="col-4 text-center d-flex align-items-center justify-content-center">
         <div class="col">
-          <h2 class="mb-3"><strong>TG</strong>Admin</h2>
+          <h2 class="mb-3"><b>THPro</b>Admin</h2>
           <p class="lead mb-3">Đại Học Sư Phạm Kỹ Thuật TPHCM, Việt Nam<br>
             Phone: +84 375 274267
           </p>
@@ -70,7 +70,7 @@
       </div>
     </div>
   </div>
-  <div class="container">
+  <div class="container" *ngIf="(authService.currentUser$ | async)===null">
     <h1 class="text-center mt-5">Đăng nhập để bắt đầu phiên làm việc</h1>
     <div class="text-center mt-3">
       <button (click)="loginToggle()" class="btn btn-primary btn-lg">Sign In&ensp;
@@ -79,3 +79,4 @@
     </div>
   </div>
 </div>
+<app-login *ngIf="loginMode" (cancelLogin)="cancelLoginMode($event)"></app-login>

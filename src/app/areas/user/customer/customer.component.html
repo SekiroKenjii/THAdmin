@@ -1,0 +1,282 @@
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1><strong>Quản lý khách hàng</strong></h1>
+      </div>
+      <div class="col-sm-6"></div>
+    </div>
+  </div>
+</section>
+<section class="content">
+  <div class="container-fluid" id="main-container">
+    <div class="card">
+      <div class="card-header">
+        <button class="btn btn-success float-right" (click)="onOpenModal('add')" title="Thêm mới">
+          <i class="fas fa-plus"></i> Thêm khách hàng
+        </button>
+      </div>
+      <app-loading-spinner *ngIf="showSpinner"></app-loading-spinner>
+      <div *ngIf="!showSpinner" class="card-body table-responsive p-0">
+        <table *ngIf="(uservms | json) != '{}'" class="table table-bordered table-hover text-nowrap">
+          <thead>
+            <tr class="bg-dark">
+              <th style="min-width: 150px;">Tên Khách Hàng</th>
+              <th style="min-width: 100px;">Email</th>
+              <th>SĐT</th>
+              <th>Địa Chỉ</th>
+              <th style="min-width: 150px; width: 150px;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let uservm of uservms">
+              <td>{{ uservm.user.firstName + ' ' + uservm.user.lastName }}</td>
+              <td>{{ uservm.user.email }}</td>
+              <td>{{ uservm.user.phoneNumber }}</td>
+              <td>{{ uservm.user.address + ' - ' + uservm.user.city + ' - ' + uservm.user.country}}</td>
+              <td class="text-center align-middle">
+                <div class="btn-group">
+                  <button class="btn btn-primary text-white" (click)="onOpenModal('edit', uservm)" title="Chỉnh Sửa">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button *ngIf="!uservm.user.lockoutEnabled" class="btn btn-success text-white"
+                    (click)="onOpenModal('lock', uservm)" title="Khoá">
+                    <i class="fas fa-lock-open"></i>
+                  </button>
+                  <button *ngIf="uservm.user.lockoutEnabled" class="btn btn-danger text-white"
+                    (click)="onOpenModal('unlock', uservm)" title="Mở Khoá">
+                    <i class="fas fa-lock"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <h4 *ngIf="(uservms | json) == '{}'" class="text-center align-middle">Chưa có nhân viên nào!</h4>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Add Employee Modal -->
+<div class="modal fade" id="addCustomerModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form #addForm="ngForm" (ngSubmit)="onAddCustomer(addForm)">
+        <div class="modal-header bg-dark">
+          <h5 class="modal-title"><strong>Thêm mới khách hàng</strong></h5>
+          <button type="button" class="close" (click)="appService.hideModal('addCustomerModal')" aria-label="Close">
+            <span aria-hidden="true" class="text-white">&times;</span>
+          </button>
+        </div>
+        <app-loading-overlay *ngIf="showOverlay"></app-loading-overlay>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-9">
+              <div class="form-group">
+                <label>Tên tài khoản</label>
+                <input type="text" name="username" placeholder="Username" required class="form-control" ngModel />
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="form-group">
+                <label>Giới tính</label>
+                <ng-select name="gender" required ngModel>
+                  <ng-option *ngFor="let option of appService.GenderOptions" [value]="option.value">{{option.name}}
+                  </ng-option>
+                </ng-select>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="email" placeholder="Email" required class="form-control" ngModel />
+          </div>
+          <div class="form-group">
+            <label>Mật khẩu&ensp;<strong>(Mặc định: <u>TGPro0110@Customer</u>)</strong></label>
+            <input type="text" name="password" placeholder="Password" class="form-control" ngModel />
+          </div>
+        </div>
+        <div class="modal-footer justify-content-end">
+          <button type="button" class="btn btn-secondary"
+            (click)="appService.hideModal('addCustomerModal')">Close</button>
+          <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary">Tạo mới</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Update Employee Modal -->
+<div class="modal fade" id="updateCustomerModal">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <form [formGroup]="CustomerForm" (ngSubmit)="onUpdateCustomer(CustomerForm.value)">
+        <div class="modal-header bg-dark">
+          <h5 class="modal-title"><strong>Cập nhật thông tin khách hàng</strong></h5>
+          <button type="button" class="close" (click)="appService.hideModal('updateCustomerModal')" aria-label="Close">
+            <span aria-hidden="true" class="text-white">&times;</span>
+          </button>
+        </div>
+        <app-loading-overlay *ngIf="showOverlay"></app-loading-overlay>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-8" style="border-right: 1px solid #ced4da;">
+              <input type="hidden" value="{{CustomerForm.value.Id}}" class="form-control">
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label>Họ</label>
+                    <input type="text" value="{{CustomerForm.value.FirstName}}" formControlName="FirstName"
+                      placeholder="FirstName" required class="form-control" />
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label>Tên</label>
+                    <input type="text" value="{{CustomerForm.value.LastName}}" formControlName="LastName"
+                      placeholder="LastName" required class="form-control" />
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-8">
+                  <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" value="{{CustomerForm.value.Email}}" formControlName="Email" placeholder="Email"
+                      required class="form-control" />
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-group">
+                    <label>Giới tính</label>
+                    <ng-select formControlName="Gender" required>
+                      <ng-option *ngFor="let option of appService.GenderOptions" [value]="option.value">{{option.name}}
+                      </ng-option>
+                    </ng-select>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label>Tên tài khoản</label>
+                    <input type="text" value="{{CustomerForm.value.Username}}" formControlName="Username"
+                      placeholder="Username" required class="form-control" />
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label>Số điện thoại</label>
+                    <input type="text" value="{{CustomerForm.value.PhoneNumber}}" formControlName="PhoneNumber"
+                      placeholder="PhoneNumber" required class="form-control" />
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label>Mật khẩu hiện tại&ensp;<strong class="text-danger">(Bắt buộc nếu đổi mật
+                        khẩu)</strong></label>
+                    <input type="text" formControlName="CurrentPassword" placeholder="Current Password"
+                      class="form-control" />
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label>Mật khẩu mới&ensp;<strong class="text-danger">(Bắt buộc nếu đổi mật khẩu)</strong></label>
+                    <input type="text" formControlName="Password" placeholder="New Password" class="form-control" />
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Ảnh đại diện</label>
+                <div class="file-upload-wrapper" id="file-upload-wrapper" data-text="Chọn ảnh mới!">
+                  <input type="file" class="file-upload-field" (change)="fileProgress($event)" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label>Địa chỉ</label>
+                    <input type="text" value="{{CustomerForm.value.Address}}" formControlName="Address"
+                      placeholder="Address" required class="form-control" />
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="form-group">
+                    <label>Thành phố</label>
+                    <input type="text" value="{{CustomerForm.value.City}}" formControlName="City" placeholder="City"
+                      required class="form-control" />
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="form-group">
+                    <label>Quốc gia</label>
+                    <input type="text" value="{{CustomerForm.value.Country}}" formControlName="Country"
+                      placeholder="Country" class="form-control" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div *ngIf="previewUrl && previewUrl !== ''">
+                <img class="img-fluid pad" [src]="previewUrl" alt="Trademark Logo" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer justify-content-end">
+          <button type="button" class="btn btn-secondary"
+            (click)="appService.hideModal('updateCustomerModal')">Close</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Lock Employee Modal -->
+<div class="modal fade" id="lockCustomerModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger">
+        <h5 class="modal-title"><strong>Khoá khách hàng</strong></h5>
+        <button type="button" class="close" (click)="appService.hideModal('lockCustomerModal')" aria-label="Close">
+          <span aria-hidden="true" class="text-white">&times;</span>
+        </button>
+      </div>
+      <app-loading-overlay *ngIf="showOverlay"></app-loading-overlay>
+      <div class="modal-body">
+        <p>Bạn có chắc muốn khoá khách hàng: {{lockCustomer?.user?.email}}?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="appService.hideModal('lockCustomerModal')">No</button>
+        <button class="btn btn-danger" (click)="onLockCustomer(lockCustomer.user.id)">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Unlock Employee Modal -->
+<div class="modal fade" id="unlockCustomerModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-success">
+        <h5 class="modal-title"><strong>Mở khoá khách hàng</strong></h5>
+        <button type="button" class="close" (click)="appService.hideModal('unlockCustomerModal')" aria-label="Close">
+          <span aria-hidden="true" class="text-white">&times;</span>
+        </button>
+      </div>
+      <app-loading-overlay *ngIf="showOverlay"></app-loading-overlay>
+      <div class="modal-body">
+        <p>Bạn có chắc muốn mở khoá khách hàng: {{unlockCustomer?.user?.email}}?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary"
+          (click)="appService.hideModal('unlockCustomerModal')">No</button>
+        <button class="btn btn-success" (click)="onUnlockCustomer(unlockCustomer.user.id)">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,16 +1,18 @@
+import { AuthenticationService } from './../../_services/authentication.service';
 import { ApplicationService } from './../../_services/application.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: [
+  ]
 })
 export class HomeComponent implements OnInit {
 
-  loginMode = false;
+  loginMode: boolean = false;
 
-  constructor(protected appService: ApplicationService) { }
+  constructor(private appService: ApplicationService, public authService: AuthenticationService) { }
 
   ngOnInit(): void {
     this.appService.handleActiveEvent();

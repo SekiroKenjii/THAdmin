@@ -1,0 +1,333 @@
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1><strong>Quản lý sản phẩm</strong></h1>
+      </div>
+      <div class="col-sm-6"></div>
+    </div>
+  </div>
+</section>
+<section class="content">
+  <div class="container-fluid" id="main-container">
+    <div class="card" *ngIf="!openEditPage">
+      <div class="card-header">
+        <button class="btn btn-success float-right" (click)="onOpenModal('create')" title="Nhập kho">
+          <i class="fas fa-plus"></i> Nhập kho
+        </button>
+      </div>
+      <app-loading-spinner *ngIf="showSpinner"></app-loading-spinner>
+      <div *ngIf="!showSpinner" class="card-body table-responsive p-0">
+        <table *ngIf="products" class="table table-bordered table-hover text-nowrap">
+          <thead>
+            <tr class="bg-dark">
+              <th style="min-width: 20px; width: 20px;">#</th>
+              <th>Tên Sản Phẩm</th>
+              <th>Loại Hàng</th>
+              <th>Nhà Cung Cấp</th>
+              <th>Trạng Thái</th>
+              <th style="min-width: 150px; width: 150px;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let product of products">
+              <td>{{ product?.id }}.</td>
+              <td>{{ product?.name }}</td>
+              <td>{{ product?.category?.name }}</td>
+              <td>{{ product?.vendor?.name }}</td>
+              <td *ngIf="product?.discontinued===true">Ngừng kinh doanh</td>
+              <td *ngIf="product?.discontinued===false">Đang kinh doanh</td>
+              <td class="text-center align-middle">
+                <div class="btn-group">
+                  <button class="btn btn-primary text-white" (click)="onOpenEditPage(product)" title="Chỉnh Sửa">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn btn-info text-white" (click)="onOpenModal('details', '', product)"
+                    title="Chi Tiết">
+                    <i class="fas fa-list"></i>
+                  </button>
+                  <button class="btn btn-danger text-white" (click)="onOpenModal('delete', '', product)" title="Xoá">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <h4 *ngIf="!products" class="text-center align-middle">Chưa có sản phẩm nào!</h4>
+      </div>
+    </div>
+    <app-edit-product *ngIf="openEditPage" [product]="editProducts" (closeEdit)="onCloseEditPage($event)">
+    </app-edit-product>
+  </div>
+</section>
+
+<!-- Add Product Modal -->
+<div class="modal fade" id="GoodsReceiptModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form #addForm="ngForm" (ngSubmit)="onAddProduct(addForm)">
+        <div class="modal-header bg-dark">
+          <h5 class="modal-title"><strong>Nhập Kho</strong></h5>
+          <button type="button" class="close" (click)="appService.hideModal('GoodsReceiptModal')" aria-label="Close">
+            <span aria-hidden="true" class="text-white">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="name">Tên sản phẩm</label>
+                <input type="text" name="name" placeholder="Tên sản phẩm" required class="form-control" ngModel />
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="form-group">
+                <label for="name">Số lượng nhập kho</label>
+                <input type="number" name="unitsInStock" placeholder="Số lượng nhập kho" required class="form-control"
+                  ngModel />
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="form-group">
+                <label>Kinh doanh?</label>
+                <ng-select name="discontinued" required ngModel>
+                  <ng-option *ngFor="let option of appService.ProductAvailable" [value]="option.value">
+                    {{option.name}}</ng-option>
+                </ng-select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4">
+              <div class="form-group">
+                <label>Nhu cầu sử dụng</label>
+                <div class="input-group">
+                  <ng-select name="demandId" required class="form-control" ngModel>
+                    <ng-option *ngFor="let option of productDetails?.demands" [value]="option.id">
+                      {{option.name}}
+                    </ng-option>
+                  </ng-select>
+                  <div class="input-group-addon">
+                    <a class="btn btn-success form-control" (click)="onOpenModal('openPartialModal', 'demand')"
+                      title="Thêm nhu cầu mới">
+                      <i class="fas fa-plus"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label>Loại hàng</label>
+                <div class="input-group">
+                  <ng-select name="categoryId" required class="form-control" ngModel>
+                    <ng-option *ngFor="let option of productDetails?.categories" [value]="option.id">
+                      {{option.name}}
+                    </ng-option>
+                  </ng-select>
+                  <div class="input-group-addon">
+                    <a class="btn btn-success form-control" (click)="onOpenModal('openPartialModal', 'category')"
+                      title="Thêm mới loại hàng">
+                      <i class="fas fa-plus"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label>Tình trạng hàng</label>
+                <div class="input-group">
+                  <ng-select name="conditionId" required class="form-control" ngModel>
+                    <ng-option *ngFor="let option of productDetails?.conditions" [value]="option.id">
+                      {{option.name}}
+                    </ng-option>
+                  </ng-select>
+                  <div class="input-group-addon">
+                    <a class="btn btn-success form-control" (click)="onOpenModal('openPartialModal', 'condition')"
+                      title="Thêm mới tình trạng hàng">
+                      <i class="fas fa-plus"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-7">
+              <div class="form-group">
+                <label>Nhà cung cấp</label>
+                <div class="input-group">
+                  <ng-select name="vendorId" required class="form-control" ngModel>
+                    <ng-option *ngFor="let option of productDetails?.vendors" [value]="option.id">
+                      {{option.name}}
+                    </ng-option>
+                  </ng-select>
+                  <div class="input-group-addon">
+                    <a class="btn btn-success form-control" (click)="onOpenModal('openPartialModal', 'vendor')"
+                      title="Thêm nhà cung cấp mới">
+                      <i class="fas fa-plus"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-5">
+              <div class="form-group">
+                <label>Thương hiệu</label>
+                <div class="input-group">
+                  <ng-select name="trademarkId" required class="form-control" ngModel>
+                    <ng-option *ngFor="let option of productDetails?.trademarks" [value]="option.id">
+                      {{option.name}}
+                    </ng-option>
+                  </ng-select>
+                  <div class="input-group-addon">
+                    <a class="btn btn-success form-control" (click)="onOpenModal('openPartialModal', 'trademark')"
+                      title="Thêm thương hiệu mới">
+                      <i class="fas fa-plus"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary"
+            (click)="appService.hideModal('GoodsReceiptModal')">Close</button>
+          <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary">Nhập</button>
+        </div>
+        <app-loading-overlay *ngIf="showOverlay"></app-loading-overlay>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Partial Product Details Modal -->
+<div class="modal fade" id="partialProductDetailsModal">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header bg-dark">
+        <h5 class="modal-title"><strong>Thêm chi tiết</strong></h5>
+        <button type="button" class="close" (click)="appService.hideModal('partialProductDetailsModal')"
+          aria-label="Close">
+          <span aria-hidden="true" class="text-white">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <app-category *ngIf="partialToggle === 'category'"></app-category>
+        <app-condition *ngIf="partialToggle === 'condition'"></app-condition>
+        <app-demand *ngIf="partialToggle === 'demand'"></app-demand>
+        <app-vendor *ngIf="partialToggle === 'vendor'"></app-vendor>
+        <app-trademark *ngIf="partialToggle === 'trademark'"></app-trademark>
+      </div>
+      <div class="modal-footer justify-content-end">
+        <button type="button" class="btn btn-secondary" (click)="tryGetProductDetails()"
+          (click)="appService.hideModal('partialProductDetailsModal')">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Details Product Modal -->
+<div class="modal fade" id="detailsProductModal">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header bg-dark">
+        <h5 class="modal-title"><strong>Chi tiết sản phẩm</strong></h5>
+        <button type="button" class="close" (click)="onCloseDetailsPage('detailsProductModal')" aria-label="Close">
+          <span aria-hidden="true" class="text-white">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="(detailsProduct | json) != '{}'">
+        <div class="row">
+          <div class="col-12 col-sm-6">
+            <div class="col-12">
+              <img src="{{detailsProduct.productImages[0].imageUrl}}" class="product-image" alt="Product Image"
+                style="width: 450px">
+              <div class="col-12 product-image-thumbs" *ngIf="detailsProduct.productImages.length <= 1">
+                <div class="product-image-thumb active">
+                  <img src="{{detailsProduct.productImages[0].imageUrl}}" alt="Product Image">
+                </div>
+              </div>
+              <div class="col-12 product-image-thumbs" *ngIf="detailsProduct.productImages.length > 1">
+                <div class="product-image-thumb active" (click)="appService.onClickProductThumb()">
+                  <img src="{{detailsProduct.productImages[0].imageUrl}}" alt="Product Image">
+                </div>
+                <div class="product-image-thumb" (click)="appService.onClickProductThumb()"
+                  *ngFor="let item of detailsProduct?.productImages | slice:1">
+                  <img src="{{item.imageUrl}}" alt="Product Image">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 mt-4">
+            <h3 class="my-3">{{detailsProduct?.name}}</h3>
+            <hr />
+            <div class="row">
+              <div class="col-12 col-md-7">
+                <h6>Thương Hiệu: <img src="{{detailsProduct?.trademark?.imageUrl}}" style="width:70px" />
+                </h6>
+                <h6><strong>Vi xử lý:</strong> {{detailsProduct?.cpu}}</h6>
+                <h6><strong>Màn hình:</strong> {{detailsProduct?.screen}}</h6>
+                <h6><strong>RAM:</strong> {{detailsProduct?.ram}}</h6>
+                <h6><strong>Card đồ hoạ:</strong> {{detailsProduct?.gpu}}</h6>
+                <h6><strong>Lưu trữ:</strong> {{detailsProduct?.storage}}</h6>
+                <h6><strong>Pin:</strong> {{detailsProduct?.pin}}</h6>
+                <h6><strong>Kết nối chính:</strong> {{detailsProduct?.connection}}</h6>
+                <h6><strong>Cân nặng:</strong> {{detailsProduct?.weight}}</h6>
+                <h6><strong>Hệ điều hành:</strong> {{detailsProduct?.os}}</h6>
+                <h6><strong>Màu sắc:</strong> {{detailsProduct?.color}}</h6>
+              </div>
+              <div class="col-12 col-md-5" style="border: 1px solid #e3e7ef; border-radius:1%">
+                <h5 class="pt-2"><strong>Bảo hành:</strong></h5>
+                {{detailsProduct?.warranty}}
+              </div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-12 col-md-6">
+                <h5 class="my-3"><strong>Giá bán:</strong></h5>
+              </div>
+              <div class="col-12 col-md-6">
+                <h5 class="float-right mt-3 text-danger"><strong>{{detailsProduct?.price}}</strong></h5>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr />
+        <br />
+        <h3>Đánh Giá Chi Tiết</h3>
+        <br />
+        <textarea style="width: 100%; height:300px">{{detailsProduct?.description}}</textarea>
+      </div>
+      <div class="modal-footer justify-content-end">
+        <button type="button" class="btn btn-secondary"
+          (click)="onCloseDetailsPage('detailsProductModal')">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Product Modal -->
+<div class="modal fade" id="deleteProductModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger">
+        <h5 class="modal-title"><strong>Xoá sản phẩm</strong></h5>
+        <button type="button" class="close" (click)="appService.hideModal('deleteProductModal')" aria-label="Close">
+          <span aria-hidden="true" class="text-white">&times;</span>
+        </button>
+      </div>
+      <app-loading-overlay *ngIf="showOverlay"></app-loading-overlay>
+      <div class="modal-body">
+        <p>Bạn có chắc muốn xoá sản phẩm: {{deleteProduct?.name}}?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="appService.hideModal('deleteProductModal')">No</button>
+        <button class="btn btn-danger" (click)="onDeleteProduct(deleteProduct.id)">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>

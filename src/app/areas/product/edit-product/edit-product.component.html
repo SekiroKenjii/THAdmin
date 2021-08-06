@@ -1,0 +1,228 @@
+<app-loading-spinner *ngIf="showSpinner"></app-loading-spinner>
+<div class="card" *ngIf="product && !openEditImagePage">
+  <div class="card-header">
+    <button class="btn btn-primary float-right" (click)="onCloseEditPage()" title="Quay về danh sách sản phẩm">
+      <i class="fas fa-backward"></i> Quay về
+    </button>
+  </div>
+  <app-loading-overlay *ngIf="showOverlay"></app-loading-overlay>
+  <form #updateForm="ngForm" id="editProductForm" (ngSubmit)="onUpdateProduct(updateForm)">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-6">
+          <div class="form-group">
+            <label>Tên sản phẩm</label>
+            <input type="text" name="name" ngModel="{{product?.name}}" placeholder="Nhập tên sản phẩm" required
+              class="form-control" />
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="form-group">
+            <label>Giá bán (VND)</label>
+            <input type="number" name="price" ngModel="{{product?.price}}" placeholder="Nhập giá bán" required
+              class="form-control" />
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="form-group">
+            <label>Kinh doanh?</label>
+            <ng-select name="discontinued" required [(ngModel)]="product.discontinued">
+              <ng-option *ngFor="let option of appService.ProductAvailable" [value]="option.value">
+                {{option.name}}
+              </ng-option>
+            </ng-select>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-5">
+          <div class="form-group">
+            <label>Ảnh Sản Phẩm</label>
+            <div class="col-12">
+              <img src="{{product!.productImages[0]?.imageUrl}}" class="product-image" alt="Product Image"
+                style="width: 450px">
+            </div>
+            <div class="col-12 product-image-thumbs" *ngIf="product?.productImages!.length <= 1">
+              <div class="product-image-thumb active">
+                <img src="{{product!.productImages[0]?.imageUrl}}" alt="Product Image">
+              </div>
+            </div>
+            <div class="col-12 product-image-thumbs" *ngIf="product?.productImages!.length > 1">
+              <div class="product-image-thumb active" (click)="appService.onClickProductThumb()">
+                <img src="{{product!.productImages[0]?.imageUrl}}" alt="Product Image">
+              </div>
+              <div class="product-image-thumb" *ngFor="let img of product?.productImages | slice:1"
+                (click)="appService.onClickProductThumb()">
+                <img src="{{img.imageUrl}}" alt="Product Imagex">
+              </div>
+            </div>
+            <div class="col-12 mt-4" *ngIf="product?.productImages!.length > 1">
+              <a class="btn btn-info form-control" (click)="onOpenEditImagePage(product)">
+                Sửa Ảnh Sản Phẩm&ensp;
+                <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="col-12 mt-4" *ngIf="product?.productImages!.length < 2">
+              <a class="btn btn-primary form-control" (click)="onOpenEditImagePage(product)">
+                Thêm Ảnh Sản Phẩm&ensp;
+                <i class="fas fa-arrow-right"></i></a>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Chi tiết bảo hành</label>
+            <textarea class="form-control" name="warranty" style="min-height: 150px"
+              ngModel="{{product?.warranty}}"></textarea>
+          </div>
+        </div>
+        <div class="col-7">
+          <div class="row">
+            <div class="col-4">
+              <div class="form-group">
+                <label>Nhu cầu sử dụng</label>
+                <ng-select name="demandId" required [(ngModel)]="product.demandId">
+                  <ng-option *ngFor="let option of productDetails?.demands" [value]="option.id">
+                    {{option.name}}</ng-option>
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label>Loại hàng</label>
+                <ng-select name="categoryId" required [(ngModel)]="product.categoryId">
+                  <ng-option *ngFor="let option of productDetails?.categories" [value]="option.id">
+                    {{option.name}}</ng-option>
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label>Tình trạng hàng</label>
+                <ng-select name="conditionId" required [(ngModel)]="product.conditionId">
+                  <ng-option *ngFor="let option of productDetails?.conditions" [value]="option.id">
+                    {{option.name}}</ng-option>
+                </ng-select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-8">
+              <div class="form-group">
+                <label>Nhà cung cấp</label>
+                <ng-select name="vendorId" required [(ngModel)]="product.vendorId">
+                  <ng-option *ngFor="let option of productDetails?.vendors" [value]="option.id">
+                    {{option.name}}</ng-option>
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label>Thương hiệu</label>
+                <ng-select name="trademarkId" required [(ngModel)]="product.trademarkId">
+                  <ng-option *ngFor="let option of productDetails?.trademarks" [value]="option.id">
+                    {{option.name}}</ng-option>
+                </ng-select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label>Vi xử lý</label>
+                <input type="text" name="cpu" ngModel="{{product?.cpu}}" placeholder="Nhập CPU" class="form-control" />
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label>Bộ nhớ RAM</label>
+                <input type="text" name="ram" ngModel="{{product?.ram}}" placeholder="Nhập dung lượng RAM"
+                  class="form-control" />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-7">
+              <div class="form-group">
+                <label>Màn hình</label>
+                <input type="text" name="screen" ngModel="{{product?.screen}}" placeholder="Nhập chi tiết màn hình"
+                  class="form-control" />
+              </div>
+            </div>
+            <div class="col-5">
+              <div class="form-group">
+                <label>Card đồ hoạ</label>
+                <input type="text" name="gpu" ngModel="{{product?.gpu}}" placeholder="Nhập tên card đồ hoạ"
+                  class="form-control" />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-7">
+              <div class="form-group">
+                <label>Khả năng lưu trữ</label>
+                <input type="text" name="storage" ngModel="{{product?.storage}}" placeholder="Nhập bộ nhớ lưu trữ"
+                  class="form-control" />
+              </div>
+            </div>
+            <div class="col-5">
+              <div class="form-group">
+                <label>Hệ điều hành</label>
+                <input type="text" name="os" ngModel="{{product?.os}}" placeholder="Nhập tên hệ điều hành"
+                  class="form-control" />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-7">
+              <div class="form-group">
+                <label>Kết nối chính</label>
+                <input type="text" name="connection" ngModel="{{product?.connection}}"
+                  placeholder="Nhập tên các cổng kết nối" class="form-control" />
+              </div>
+            </div>
+            <div class="col-5">
+              <div class="form-group">
+                <label>Dung lượng pin</label>
+                <input type="text" name="pin" ngModel="{{product?.pin}}" placeholder="Nhập dung lượng pin"
+                  class="form-control" />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4">
+              <div class="form-group">
+                <label>Màu sản phẩm</label>
+                <input type="text" name="color" ngModel="{{product?.color}}" placeholder="Nhập màu sản phẩm"
+                  class="form-control" />
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label>Khối lượng</label>
+                <input type="text" name="weight" ngModel="{{product?.weight}}" placeholder="Nhập khối lượng sản phẩm"
+                  class="form-control" />
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label>Số lượng nhập kho</label>
+                <input type="number" name="unitsInStock" ngModel="{{product?.unitsInStock}}"
+                  placeholder="Nhập số lượng nhập kho" required class="form-control" />
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Mô tả sản phẩm</label>
+            <textarea class="form-control" name="description" ngModel="{{product?.description}}"
+              style="min-height: 250px"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="modal-footer justify-content-end">
+    <button [disabled]="updateForm.invalid" type="submit" form="editProductForm" class="btn btn-primary">Save
+      Changes</button>
+  </div>
+</div>
+<app-edit-product-image *ngIf="openEditImagePage" (closeEditImage)="onCloseEditImagePage($event)"
+  [productImageDetails]="productImageDatails">
+</app-edit-product-image>
